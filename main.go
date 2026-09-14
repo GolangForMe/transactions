@@ -73,6 +73,6 @@ func main() {
 		sum += transaction
 	}
 
-	fmt.Printf("Количество Ваших транзакций: %d\n", len(transactions))
-	fmt.Printf("Общая сумма на Вашем счете: %d\n", sum)
+	fmt.Printf("\nКоличество Ваших транзакций: %d\n", len(transactions))
+	fmt.Printf("\nОбщая сумма на Вашем счете: %d\n", sum)
 }

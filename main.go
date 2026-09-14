@@ -1,24 +1,31 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 )
 
 func main() {
+	// Если ожидаем ~20 транзакций — выделяем память заранее
 	transactions := make([]int, 0, 20)
 	sum := 0
+	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
-		var input string
-		var choise string
+		choice := ""
 
 		fmt.Print("Введите Вашу транзакцию: ")
-		fmt.Scan(&input)
 
-		// Обрезка пустых симолов слева и справа от ввода пользователя
-		input = strings.TrimSpace(input)
+		// 1. Сначала сканируем ввод
+		if !scanner.Scan() {
+			break
+		}
+
+		// 2. Потом получаем текст, обрезаем пробелы
+		input := strings.TrimSpace(scanner.Text())
 
 		// Пытаемся преобразовать строку к целому числу
 		transaction, err := strconv.Atoi(input)
@@ -38,16 +45,27 @@ func main() {
 		// Все прошло успешно - добавляем в слайс новую транзакцию
 		transactions = append(transactions, transaction)
 
-		fmt.Println("Хотите продолжить (yes/no)? ")
-		fmt.Scan(&choise)
+		fmt.Print("Хотите продолжить (yes/no)? ")
 
-		// Обрезка пустых симолов слева и справа от ввода пользователя
-		choise = strings.ToLower(strings.TrimSpace(choise))
-
-		// Пользователь решил прекратить ввод данных
-		if choise == "no" || choise == "n" {
+		// 1. Сначала сканируем ввод ответа
+		if !scanner.Scan() {
 			break
 		}
+
+		// 2. Только потом получаем текст, обрезаем пробелы и приводим к нижнему регистру
+		choice = strings.ToLower(strings.TrimSpace(scanner.Text()))
+
+		// Пользователь решил прекратить ввод данных
+		if choice == "no" || choice == "n" {
+			break
+		}
+	}
+
+	// Проверяем, что команда scanner.Scan() завершилась по ошибке ввода (например, переполнение буфера)
+	if err := scanner.Err(); err != nil {
+		fmt.Printf("Ошибка чтения ввода: %v\n", err)
+		// Завершаем программу с кодом ошибки
+		os.Exit(1)
 	}
 
 	// Считаем общую сумму
@@ -55,6 +73,6 @@ func main() {
 		sum += transaction
 	}
 
-	fmt.Printf("Колличество Ваших транзакций: %d\n", len(transactions))
+	fmt.Printf("Количество Ваших транзакций: %d\n", len(transactions))
 	fmt.Printf("Общая сумма на Вашем счете: %d\n", sum)
 }

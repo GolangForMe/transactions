@@ -8,10 +8,19 @@ import (
 	"strings"
 )
 
+func calculateTransactionsSum(transactions []int) int {
+	sum := 0
+
+	for _, transaction := range transactions {
+		sum += transaction
+	}
+
+	return sum
+}
+
 func main() {
 	// Если ожидаем ~20 транзакций — выделяем память заранее
 	transactions := make([]int, 0, 20)
-	sum := 0
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -68,11 +77,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Считаем общую сумму
-	for _, transaction := range transactions {
-		sum += transaction
-	}
-
 	fmt.Printf("\nКоличество Ваших транзакций: %d\n", len(transactions))
-	fmt.Printf("\nОбщая сумма на Вашем счете: %d\n", sum)
+	fmt.Printf("\nОбщая сумма на Вашем счете: %d\n", calculateTransactionsSum(transactions))
 }
